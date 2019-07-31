@@ -1,12 +1,11 @@
 package com.vytrack.tests.components.login_navigation;
 
+import com.vytrack.utilities.CatchMethod;
+import com.vytrack.utilities.TestBase;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import utilities.CatchMethod;
-import utilities.TestBase;
 
 public class LoginTest extends TestBase {
 
@@ -15,8 +14,7 @@ public class LoginTest extends TestBase {
 
     @Test (description = "Positive Login scenarios", priority = 1)
     public void positiveLogin(){
-        driver.findElement(By.id(loginIDLocator)).sendKeys(usernameStoreManager);
-        driver.findElement(By.id(passwordIDLocator)).sendKeys(password, Keys.ENTER);
+        loginPage.login(usernameStoreManager,password);
         CatchMethod.waitUntilLoaderScreenDissapear(driver);
         String dashboardPageExpectedName="Dashboard";
         String dashboardPageActualName=driver.findElement(By.className(pageNameLocator)).getText();
@@ -24,9 +22,7 @@ public class LoginTest extends TestBase {
         driver.findElement(By.linkText("Pearl Wuckert")).click();
         driver.findElement(By.cssSelector(logoutButton)).click();
 
-
-        driver.findElement(By.id(loginIDLocator)).sendKeys(usernameManager);
-        driver.findElement(By.id(passwordIDLocator)).sendKeys(password, Keys.ENTER);
+        loginPage.login(usernameManager,password);
         CatchMethod.waitUntilLoaderScreenDissapear(driver);
         String dashboardPage2ExpectedName="Dashboard";
         String dashboardPage2ActualName=driver.findElement(By.className(pageNameLocator)).getText();
@@ -34,8 +30,7 @@ public class LoginTest extends TestBase {
         driver.findElement(By.linkText("Mariela Koch")).click();
         driver.findElement(By.cssSelector(logoutButton)).click();
 
-        driver.findElement(By.id(loginIDLocator)).sendKeys(usernameDriver);
-        driver.findElement(By.id(passwordIDLocator)).sendKeys(password, Keys.ENTER);
+        loginPage.login(usernameDriver,password);
         CatchMethod.waitUntilLoaderScreenDissapear(driver);
         String launchPageExpectedName="Quick Launchpad";
         String launchPageActualName=driver.findElement(By.className(pageNameLocator)).getText();
@@ -52,8 +47,8 @@ public class LoginTest extends TestBase {
 
     @Test (description = "Negative Login scenarios", priority = 2)
     public void negativeLogin(){
-        driver.findElement(By.id(loginIDLocator)).sendKeys(usernameStoreManager);
-        driver.findElement(By.id(passwordIDLocator)).sendKeys("Wrong Password", Keys.ENTER);
+        loginPage.clickRememberMe();
+        loginPage.login(usernameStoreManager,"Wrong Password");
 
         WebElement message=driver.findElement(By.cssSelector("div[class='alert alert-error']"));
 

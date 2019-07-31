@@ -4,8 +4,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import utilities.CatchMethod;
-import utilities.TestBase;
+import com.vytrack.utilities.CatchMethod;
+import com.vytrack.utilities.TestBase;
 
 public class MenuOptionsTest extends TestBase {
 

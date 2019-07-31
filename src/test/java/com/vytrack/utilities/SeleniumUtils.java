@@ -1,4 +1,4 @@
-package utilities;
+package com.vytrack.utilities;
 
 public class SeleniumUtils {
 

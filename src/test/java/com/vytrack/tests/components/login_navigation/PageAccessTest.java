@@ -5,8 +5,8 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import utilities.CatchMethod;
-import utilities.TestBase;
+import com.vytrack.utilities.CatchMethod;
+import com.vytrack.utilities.TestBase;
 
 public class PageAccessTest extends TestBase {
 
