@@ -1,20 +1,20 @@
 package com.vytrack.utilities;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import com.vytrack.pages.login_navigation.LoginPage;
-import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
 
-import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
 
@@ -25,6 +25,10 @@ public class TestBase {
     public JavascriptExecutor js;
     public  WebDriverWait wait;
     public LoginPage loginPage;
+
+    protected ExtentReports report;
+    protected ExtentHtmlReporter htmlReporter;
+    protected ExtentTest extentLogger;
 
 
     public  String usernameManager= ConfigurationReader.getProperty("usernamemanager");
@@ -54,9 +58,22 @@ public class TestBase {
     public String vehiclesContractsModuleLocator="Vehicle Contracts";
 
 
+    @BeforeTest
+    public void testSetup(){
+        report=new ExtentReports();
+        String pathToReport=System.getProperty("user.dir")+"/test-output/report.html";
+
+        htmlReporter=new ExtentHtmlReporter(pathToReport);
+
+        report.attachReporter(htmlReporter);
+        report.setSystemInfo("OS",System.getProperty("os.name"));
+
+        htmlReporter.config().setDocumentTitle("VYTrack TEst Automation");
+    }
 
     @BeforeMethod
     public void setup(){
+
         driver= Driver.getDriver();
         js= (JavascriptExecutor) driver;
         ac= new Actions(driver);
@@ -73,20 +90,40 @@ public class TestBase {
     @AfterMethod
     public void tearDown(ITestResult result){
         if(ITestResult.FAILURE == result.getStatus()) {
-            //We are creating object to take a screenshot
-            TakesScreenshot screenshot = (TakesScreenshot) driver;
-            //call method to take a screenshot
-            File src = screenshot.getScreenshotAs(OutputType.FILE);
+//            //We are creating object to take a screenshot
+//            TakesScreenshot screenshot = (TakesScreenshot) driver;
+//            //call method to take a screenshot
+//            File src = screenshot.getScreenshotAs(OutputType.FILE);
+//            try {
+//                //getName() - will return name of the test method
+//                //and save screenshot under project > screenshots with date/time/test name tag
+//                FileUtils.copyFile(src, new File(System.getProperty("user.dir") + "/screenshots/" + LocalDateTime.now() +"_"+ result.getName() + ".png"));
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+
+            String pathToTheScreenShot=SeleniumUtils.getScreenshot(result.getName());
+
+            extentLogger.fail(result.getName());
+
             try {
-                //getName() - will return name of the test method
-                //and save screenshot under project > screenshots with date/time/test name tag
-                FileUtils.copyFile(src, new File(System.getProperty("user.dir") + "/screenshots/" + LocalDateTime.now() +"_"+ result.getName() + ".png"));
+                extentLogger.addScreenCaptureFromPath(pathToTheScreenShot);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            extentLogger.fail(result.getThrowable());
+        }else if(result.getStatus()==ITestResult.SKIP){
+            extentLogger.skip("Test case skipped "+result.getName());
         }
 
 
         Driver.closeDriver();
     }
+
+    @AfterTest
+    public void tearDownTest(){
+        report.flush();
+    }
+
 }

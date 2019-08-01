@@ -14,6 +14,7 @@ public class LoginTest extends TestBase {
 
     @Test (description = "Positive Login scenarios", priority = 1)
     public void positiveLogin(){
+        extentLogger=report.createTest("Login with every credentials");
         loginPage.login(usernameStoreManager,password);
         CatchMethod.waitUntilLoaderScreenDissapear(driver);
         String dashboardPageExpectedName="Dashboard";
@@ -42,6 +43,7 @@ public class LoginTest extends TestBase {
         Assert.assertEquals(dashboardPage2ExpectedName,dashboardPage2ActualName);
         Assert.assertNotEquals(actualDriver, actualSalesManager);
         Assert.assertEquals(launchPageExpectedName,launchPageActualName);
+        extentLogger.pass("Verified that usernames are correct");
 
     }
 
